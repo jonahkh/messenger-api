@@ -3,15 +3,13 @@ services:
   mongodb:
     image: mongo:3.6
     restart: always
-#    environment:
-#      MONGODB_INITDB_ROOT_USERNAME: user
-#      MONGODB_INITDB_ROOT_PASSWORD: password
-#      MONGO_INITDB_DATABASE: messages
     ports:
       - 27017:27017
   messenger-api:
     build: .
     restart: always
+    environment:
+      spring.data.mongodb.host: mongodb
     ports:
       - 8080:8080
     links:
