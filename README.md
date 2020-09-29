@@ -49,3 +49,20 @@ In future implementations, this limit should be configurable as an environment v
     Sample invocation to get the message from (3) for recipient=Colorado
     
     `curl -X GET http://localhost:8080/messenger/getUnreadMessages?recipient=Colorado`
+    
+## Testing
+Mesenger-api has a collection of unit (suffix Test) and integration tests (suffix IT). The unit tests cover 100% of the 
+code and the Integration tests cover end-to-end testing with an embedded Mongo server (flapdoodle).
+
+## Usage
+A web application would use this platform to manage messages from a web server standpoint. A client would create some 
+application with a friendly UI so that a user can send a message to another. This application should periodically poll the
+API's `/messenger/getUnreadMessages` endpoint for the current user to check for new messages. A future implementation could
+include a server-side scheduler that sends notifications to recipient devices for new messages. 
+
+Future implementations would also cache unread messages for much quicker read access for the recipient. The writes would 
+also be put into a buffer/queue to be written once a certain request count threshold has been met i.e. if the server has
+1,000 unread messages, write to DB.
+
+Use this API as you would any standard RESTful API. Invoke via SawggerUI, Postman, curl, another application, etc. 
+
