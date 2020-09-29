@@ -15,6 +15,9 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+/**
+ * Manages business logic for the Messenger API application.
+ */
 @Service
 @Slf4j
 public class MessengerApiServiceImpl implements MessengerApiService {
@@ -33,6 +36,7 @@ public class MessengerApiServiceImpl implements MessengerApiService {
     @Override
     public List<SimpleMessage> getRecentMessages(String recipient, String sender) {
         List<SimpleMessageDocument> matchingMessages;
+        // Sender is optional
         if (StringUtils.isEmpty(sender)) {
             log.debug("Sender is null for fetch top 100 messages for {}", recipient);
             matchingMessages = messengerApiRepository.findTop100ByRecipientOrderByTimestampDesc(recipient);
@@ -49,6 +53,7 @@ public class MessengerApiServiceImpl implements MessengerApiService {
     public List<SimpleMessage> getRecentWithinThirtyDays(String recipient, String sender) {
         List<SimpleMessageDocument> matchingMessages;
         final Date thirtyDaysPast = new Date(System.currentTimeMillis() - (SINGLE_DAY_CONVERSION_MILLIS * 30)); // TODO make 30 env variable
+        // Sender is optional
         if (StringUtils.isEmpty(sender)) {
             log.debug("Sender is null for fetching all messages in past 30 days for {} ", recipient);
             matchingMessages = messengerApiRepository.findAllByTimestampAfterAndRecipientOrderByTimestampDesc(thirtyDaysPast, recipient);
@@ -82,7 +87,8 @@ public class MessengerApiServiceImpl implements MessengerApiService {
                     return new SimpleMessage(document.getSender(), document.getRecipient(), document.getText());
                 })
                 .collect(Collectors.toList());
-        // Update all messages to READ status in db
+        // Update all messages to READ status in db. This is why we have the id field for SimpleMessageDocuments. Mongo
+        // perform an update if the id exists in the collection
         log.debug("Updating {} documents to READ status", matchingMessages.size());
         messengerApiRepository.saveAll(matchingMessages);
         return mappedResult;

@@ -64,5 +64,8 @@ Future implementations would also cache unread messages for much quicker read ac
 also be put into a buffer/queue to be written once a certain request count threshold has been met i.e. if the server has
 1,000 unread messages, write to DB.
 
-Use this API as you would any standard RESTful API. Invoke via SawggerUI, Postman, curl, another application, etc. 
+Use this API as you would any standard RESTful API. Invoke via SawggerUI, Postman, curl, another application, etc.
+
+Note that this project uses Lombok which is an open source compiler time code generator for common class components i.e. 
+getters, setters, equals & hashcode, constructors, etc. More information can be found on their project page: https://projectlombok.org/ 
 

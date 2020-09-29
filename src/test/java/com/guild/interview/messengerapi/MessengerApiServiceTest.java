@@ -31,12 +31,25 @@ public class MessengerApiServiceTest {
     private MessengerApiRepository messengerApiRepository;
 
     @Test
+    public void testGetUnreadMessages() {
+        final List<SimpleMessageDocument> dbResponse = Collections.singletonList(new SimpleMessageDocument("id", "hello world", "denver", "colorado", MessageStatus.UNREAD, new Date()));
+        when(messengerApiRepository.findAllByRecipientAndMessageStatus("recipient", MessageStatus.UNREAD))
+                .thenReturn(dbResponse);
+        final List<SimpleMessage> unreadMessages = messengerApiService.getUnreadMessages("recipient");
+        assertEquals(MessageStatus.READ, dbResponse.get(0).getMessageStatus());
+        verify(messengerApiRepository).saveAll(dbResponse);
+        assertEquals("hello world", unreadMessages.get(0).getText());
+    }
+
+    @Test
     public void testGetRecentMessages_withSender() {
         final List<SimpleMessageDocument> dbResponse = Collections.singletonList(new SimpleMessageDocument("id", "hello world", "denver", "colorado", MessageStatus.UNREAD, new Date()));
 
         when(messengerApiRepository.findTop100ByRecipientAndSenderOrderByTimestampDesc("denver", "colorado"))
                 .thenReturn(dbResponse);
         final List<SimpleMessage> recentMessages = messengerApiService.getRecentMessages("denver", "colorado");
+        assertEquals(MessageStatus.READ, dbResponse.get(0).getMessageStatus());
+        verify(messengerApiRepository).saveAll(dbResponse);
         assertEquals("hello world", recentMessages.get(0).getText());
     }
 
@@ -47,6 +60,8 @@ public class MessengerApiServiceTest {
         when(messengerApiRepository.findTop100ByRecipientOrderByTimestampDesc("denver"))
                 .thenReturn(dbResponse);
         final List<SimpleMessage> recentMessages = messengerApiService.getRecentMessages("denver", null);
+        assertEquals(MessageStatus.READ, dbResponse.get(0).getMessageStatus());
+        verify(messengerApiRepository).saveAll(dbResponse);
         assertEquals("hello world", recentMessages.get(0).getText());
     }
 
@@ -56,6 +71,8 @@ public class MessengerApiServiceTest {
         when(messengerApiRepository.findAllByTimestampAfterAndRecipientAndSenderOrderByTimestampDesc(any(), eq("denver"), eq("colorado")))
                 .thenReturn(dbResponse);
         final List<SimpleMessage> recentWithinThirtyDays = messengerApiService.getRecentWithinThirtyDays("denver", "colorado");
+        verify(messengerApiRepository).saveAll(dbResponse);
+        assertEquals(MessageStatus.READ, dbResponse.get(0).getMessageStatus());
         assertEquals("hello world", recentWithinThirtyDays.get(0).getText());
     }
 
@@ -65,6 +82,8 @@ public class MessengerApiServiceTest {
         when(messengerApiRepository.findAllByTimestampAfterAndRecipientOrderByTimestampDesc(any(), eq("denver")))
                 .thenReturn(dbResponse);
         final List<SimpleMessage> recentWithinThirtyDays = messengerApiService.getRecentWithinThirtyDays("denver", null);
+        verify(messengerApiRepository).saveAll(dbResponse);
+        assertEquals(MessageStatus.READ, dbResponse.get(0).getMessageStatus());
         assertEquals("hello world", recentWithinThirtyDays.get(0).getText());
     }
 

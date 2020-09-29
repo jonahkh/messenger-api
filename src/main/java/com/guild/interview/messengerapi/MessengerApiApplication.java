@@ -12,13 +12,13 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @SpringBootApplication(scanBasePackages = "com.guild.interview.messengerapi")
 @EnableSwagger2
-//@EnableMongoRepositories(basePackages = "com.guild.interview.messengerapi.dao")
 public class MessengerApiApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(MessengerApiApplication.class, args);
 	}
 
+	// Enables swagger-ui at http://<host>:<port>/swagger-ui.html
 	@Bean
 	public Docket api() {
 		return new Docket(DocumentationType.SWAGGER_2)

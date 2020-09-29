@@ -25,7 +25,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(MessengerApiController.class)
 public class MessengerApiControllerTest {
-    public static final Gson GSON = new Gson();
+    private static final Gson GSON = new Gson();
+
     @Autowired
     private MockMvc controller;
 
@@ -39,6 +40,15 @@ public class MessengerApiControllerTest {
                 .andExpect(status().isOk());
         // Check that the sendMessage() method is invoked with our request body
         verify(messengerApiService).sendMessage(request);
+    }
+
+    @Test
+    public void testGetUnreadMessages() throws Exception {
+        final List<SimpleMessage> simpleMessages = Collections.singletonList(new SimpleMessage("sender", "recipient", "hello world!"));
+        when(messengerApiService.getUnreadMessages("recipient")).thenReturn(simpleMessages);
+        final MvcResult mvcResult = this.controller.perform(get("http://localhost:8080/messenger/getUnreadMessages?recipient=recipient")).andExpect(status().isOk()).andReturn();
+        List<SimpleMessage> responseMessages = GSON.fromJson(mvcResult.getResponse().getContentAsString(), new TypeToken<List<SimpleMessage>>(){}.getType());
+        assertEquals(simpleMessages, responseMessages);
     }
 
     @Test
