@@ -36,13 +36,13 @@ In future implementations, this limit should be configurable as an environment v
 
     Sample invocation to get 100 most recent messages from sender=Denver to recipient=Colorado
     
-    `curl -X GET http://localhost:8080/messenger/getMessages?recipient=Colorado&sender=Denvre`
+    `curl -X GET http://localhost:8080/messenger/getMessages?recipient=Colorado&sender=Denver`
     
 3. Send a Simple Message from a given sender to recipient with a message body. Message will be stored in the UNREAD status.
 
     Sample invocation to send a message from sender=Denver to recipient=Colorado and text=hello world
     
-    `curl -X POST -H 'Content-Type: application/json' http://localhost:8080/messenger/sendMessage -d {"recipient": "Colorado", "sender": "Denver", "text": "hello world"}`
+    `curl -X POST -H 'Content-Type: application/json' http://localhost:8080/messenger/sendMessage -d '{"recipient": "Colorado", "sender": "Denver", "text": "hello world"}'`
     
 4. Get all unread Simple Messages for a given recipient. This will check for any messages that are in the UNREAD state for the recipient
     
