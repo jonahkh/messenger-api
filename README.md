@@ -4,6 +4,7 @@ Messenger-API is an API platform enabling simple message delivery. Users can sen
 Note that currently there is no concept of a user so for now we work with "recipients" and "senders".
 
 ## To build and run the application:
+The docker-compose command may take 5 minutes or more to download dependencies 
 
 ```
 git clone https://github.com/jonahkh/messenger-api
